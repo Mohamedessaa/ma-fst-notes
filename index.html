@@ -3,20 +3,368 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simo - FST Errachidia</title>
+    <title>Affichage des Notes - FST Errachidia</title>
     <style>
-        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background: #2c3e50; color: white; margin: 0; }
-        .box { text-align: center; background: #34495e; padding: 30px; border-radius: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.3); width: 85%; }
-        .btn { background: #e74c3c; color: white; padding: 15px 25px; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 1.1em; display: inline-block; margin-top: 20px; }
-        .info { margin-bottom: 10px; font-size: 0.9em; color: #bdc3c7; }
+        * {
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+        body {
+            background-color: #f8fafc;
+            margin: 0;
+            padding: 0;
+            color: #1e293b;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        
+        .top-nav {
+            background-color: #ffffff;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .menu-icon {
+            width: 24px;
+            height: 2px;
+            background-color: #334155;
+            position: relative;
+        }
+        .menu-icon::before, .menu-icon::after {
+            content: '';
+            position: absolute;
+            width: 24px;
+            height: 2px;
+            background-color: #334155;
+            left: 0;
+        }
+        .menu-icon::before { top: -6px; }
+        .menu-icon::after { top: 6px; }
+        
+        .nav-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1e293b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .profile-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background-color: #e2e8f0;
+            border: 1px solid #cbd5e1;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 16px;
+            flex-grow: 1;
+        }
+
+        .student-header {
+            margin: 8px 0 24px 0;
+        }
+        .student-id {
+            color: #64748b;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+        .student-name {
+            color: #0f172a;
+            font-size: 20px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: -0.3px;
+        }
+
+        .legend-card {
+            background-color: #dbeafe;
+            border-radius: 4px;
+            margin-bottom: 16px;
+            overflow: hidden;
+            border: 1px solid #bfdbfe;
+        }
+        .legend-grid-header {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            border-bottom: 1px solid #bfdbfe;
+        }
+        .legend-col {
+            padding: 10px;
+            text-align: center;
+            font-size: 10px;
+            font-weight: 600;
+            color: #475569;
+            text-transform: uppercase;
+        }
+        .legend-grid-body {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            background-color: #eff6ff;
+        }
+        .legend-val {
+            padding: 12px;
+            text-align: center;
+            font-size: 13px;
+            font-weight: 500;
+            color: #1e3a8a;
+        }
+
+        .table-header-row {
+            display: grid;
+            grid-template-columns: 2.2fr 0.8fr 0.8fr 0.8fr 0.4fr;
+            padding: 8px 12px;
+            font-size: 9px;
+            font-weight: 700;
+            color: #64748b;
+            text-transform: uppercase;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .align-right { text-align: right; }
+        .align-center { text-align: center; }
+
+        .module-list {
+            background: #ffffff;
+            border-radius: 6px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02), 0 1px 2px rgba(0,0,0,0.04);
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+        
+        .module-item {
+            display: grid;
+            grid-template-columns: 2.2fr 0.8fr 0.8fr 0.8fr 0.4fr;
+            align-items: center;
+            padding: 14px 12px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .module-item:last-child {
+            border-bottom: none;
+        }
+
+        .module-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            padding-right: 8px;
+        }
+        .module-code-container {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #22c55e;
+        }
+        .module-code {
+            font-size: 11px;
+            font-weight: 700;
+            color: #1e293b;
+        }
+        .module-name {
+            font-size: 12px;
+            color: #475569;
+            font-weight: 500;
+            line-height: 1.3;
+        }
+
+        .val-text {
+            font-size: 12px;
+            font-weight: 500;
+            color: #1e293b;
+        }
+        .val-status {
+            font-size: 10px;
+            color: #64748b;
+            margin-left: 2px;
+        }
+        .dash {
+            color: #94a3b8;
+            font-weight: 400;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 24px 16px;
+            color: #64748b;
+            font-size: 12px;
+            line-height: 1.6;
+            margin-top: auto;
+            border-top: 1px solid #f1f5f9;
+            background-color: #ffffff;
+        }
+        .footer-main {
+            font-weight: 500;
+        }
+        .footer-sub {
+            font-size: 11px;
+            color: #94a3b8;
+            margin-top: 4px;
+            letter-spacing: 0.5px;
+        }
     </style>
 </head>
 <body>
-    <div class="box">
-        <h2>Mohamed Essaaoudi</h2>
-        <p class="info">M138515364</p>
-        <p>FST Errachidia - Parcours GEG</p>
-        <a href="htmlCode.pdf" class="btn" download>Télécharger mon Relevé PDF</a>
+
+    <div class="top-nav">
+        <div class="menu-icon"></div>
+        <div class="nav-title">Affichage</div>
+        <div class="profile-icon"></div>
     </div>
+
+    <div class="container">
+        <div class="student-header">
+            <div class="student-id">GB-M138515364</div>
+            <div class="student-name">MOHAMED ESSAAOUDI</div>
+        </div>
+
+        <div class="legend-card">
+            <div class="legend-grid-header">
+                <div class="legend-col">Note &gt;= 10</div>
+                <div class="legend-col">Note &lt; 10</div>
+                <div class="legend-col">Abs</div>
+            </div>
+            <div class="legend-grid-body">
+                <div class="legend-val">Validé</div>
+                <div class="legend-val">Rattrapage</div>
+                <div class="legend-val">Non validé</div>
+            </div>
+        </div>
+
+        <div class="table-header-row">
+            <div>Module</div>
+            <div class="align-center">Norm</div>
+            <div class="align-center">Ratt</div>
+            <div class="align-center">Note</div>
+            <div class="align-right"></div>
+        </div>
+
+        <div class="module-list">
+            <!-- GB-21 -->
+            <div class="module-item">
+                <div class="module-info">
+                    <div class="module-code-container">
+                        <span class="dot"></span>
+                        <span class="module-code">GB-21</span>
+                    </div>
+                    <div class="module-name">Bases de Données</div>
+                </div>
+                <div class="align-center val-text">11 <span class="val-status">(V)</span></div>
+                <div class="align-center dash">-</div>
+                <div class="align-center val-text">11</div>
+                <div class="align-right val-text">V</div>
+            </div>
+
+            <!-- GB-22 -->
+            <div class="module-item">
+                <div class="module-info">
+                    <div class="module-code-container">
+                        <span class="dot"></span>
+                        <span class="module-code">GB-22</span>
+                    </div>
+                    <div class="module-name">Biologie Animale/<br>Biologie Végétale</div>
+                </div>
+                <div class="align-center val-text">15 <span class="val-status">(V)</span></div>
+                <div class="align-center dash">-</div>
+                <div class="align-center val-text">15</div>
+                <div class="align-right val-text">V</div>
+            </div>
+
+            <!-- GB-23 -->
+            <div class="module-item">
+                <div class="module-info">
+                    <div class="module-code-container">
+                        <span class="dot"></span>
+                        <span class="module-code">GB-23</span>
+                    </div>
+                    <div class="module-name">Géodynamique Externe</div>
+                </div>
+                <div class="align-center val-text">12.38 <span class="val-status">(V)</span></div>
+                <div class="align-center dash">-</div>
+                <div class="align-center val-text">12.38</div>
+                <div class="align-right val-text">V</div>
+            </div>
+
+            <!-- GB-24 -->
+            <div class="module-item">
+                <div class="module-info">
+                    <div class="module-code-container">
+                        <span class="dot"></span>
+                        <span class="module-code">GB-24</span>
+                    </div>
+                    <div class="module-name">Thermodynamique et<br>Mécanique des Fluides</div>
+                </div>
+                <div class="align-center val-text">12 <span class="val-status">(V)</span></div>
+                <div class="align-center dash">-</div>
+                <div class="align-center val-text">12</div>
+                <div class="align-right val-text">V</div>
+            </div>
+
+            <!-- GB-25 -->
+            <div class="module-item">
+                <div class="module-info">
+                    <div class="module-code-container">
+                        <span class="dot"></span>
+                        <span class="module-code">GB-25</span>
+                    </div>
+                    <div class="module-name">Réactivité Chimique</div>
+                </div>
+                <div class="align-center val-text">10 <span class="val-status">(V)</span></div>
+                <div class="align-center dash">-</div>
+                <div class="align-center val-text">10</div>
+                <div class="align-right val-text">V</div>
+            </div>
+
+            <!-- GB-26 -->
+            <div class="module-item">
+                <div class="module-info">
+                    <div class="module-code-container">
+                        <span class="dot"></span>
+                        <span class="module-code">GB-26</span>
+                    </div>
+                    <div class="module-name">Langues Etrangères</div>
+                </div>
+                <div class="align-center val-text">11.5 <span class="val-status">(V)</span></div>
+                <div class="align-center dash">-</div>
+                <div class="align-center val-text">11.5</div>
+                <div class="align-right val-text">V</div>
+            </div>
+
+            <!-- GB-27 -->
+            <div class="module-item">
+                <div class="module-info">
+                    <div class="module-code-container">
+                        <span class="dot"></span>
+                        <span class="module-code">GB-27</span>
+                    </div>
+                    <div class="module-name">Power Skills</div>
+                </div>
+                <div class="align-center val-text">11 <span class="val-status">(V)</span></div>
+                <div class="align-center dash">-</div>
+                <div class="align-center val-text">11</div>
+                <div class="align-right val-text">V</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="footer-main">Faculté des Sciences et Techniques, Errachidia</div>
+        <div class="footer-sub">AFFICHAGE V1.0 © 2026</div>
+    </div>
+
 </body>
 </html>
